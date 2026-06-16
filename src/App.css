@@ -1,0 +1,39 @@
+/* App-specific layout styles */
+
+/* 3D Pop-out effect - makes the entire app look like it's pushed out of the background */
+.app-container {
+  transform-style: preserve-3d;
+  perspective: 1400px;
+  perspective-origin: 50% 50%;
+  /* Push the app OUT of the background - positive Z translation */
+  transform: translateZ(25px) scale(1.02);
+  /* Subtle rotation for depth perception */
+  transform-origin: center center;
+}
+
+.app-main {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  /* Subtle FORWARD tilt to enhance the pop-out effect (toward viewer) */
+  transform: rotateX(-2deg);
+  transform-style: preserve-3d;
+  transition: transform 0.4s ease;
+}
+
+.search-section {
+  /* Uses .bump styles from index.css */
+}
+
+.test-section {
+  /* Uses .bump styles from index.css */
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.result-section {
+  display: flex;
+  justify-content: center;
+  padding: 10px 0;
+}

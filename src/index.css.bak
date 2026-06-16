@@ -1,0 +1,2024 @@
+:root {
+  --bg-color: #0d1117;
+  --bg-elevated: #161b22;
+  --text-color: #e0e6ed;
+  --primary-color: #00f2ff;
+  --primary-glow: rgba(0, 242, 255, 0.4);
+  --secondary-color: #7bd3ea;
+  --success-color: #00ff88;
+  --success-glow: rgba(0, 255, 136, 0.5);
+  --error-color: #ff4060;
+  --error-glow: rgba(255, 64, 96, 0.5);
+  
+  /* Multi-layer neumorphic shadows for extreme depth */
+  --shadow-dark: rgba(0, 0, 0, 0.5);
+  --shadow-dark-deep: rgba(0, 0, 0, 0.7);
+  --shadow-light: rgba(255, 255, 255, 0.03);
+  --shadow-light-bright: rgba(255, 255, 255, 0.06);
+  --glare-highlight: rgba(255, 255, 255, 0.08);
+  --glare-subtle: rgba(255, 255, 255, 0.04);
+  
+  --border-radius-md: 24px;
+  --border-radius-lg: 32px;
+  --border-radius-xl: 40px;
+  
+  --chip-bg: linear-gradient(145deg, #252b31, #161a1e);
+  --chip-color: #8b9bb4;
+  --chip-active-bg: linear-gradient(135deg, #00f2ff, #00b8e6);
+  --chip-active-color: #0f1216;
+  --group-header-bg: #181d22;
+  --bubble-bg: #1e2329;
+  --extruded-bg: linear-gradient(145deg, #252b31, #161a1e);
+  --extruded-color: #8b9bb4;
+  --device-img-bg: #161a1e;
+  --input-color: #fff;
+  --footer-color: #5c6a79;
+  
+  --font-mono: 'SF Mono', 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+}
+
+/* --- LIGHT THEME (NEON) --- */
+[data-theme="light"] {
+  --bg-color: #e8ecf1;
+  --bg-elevated: #ffffff;
+  --text-color: #1a1a2e;
+  --primary-color: #ff6b35;
+  --primary-glow: rgba(255, 107, 53, 0.6);
+  --secondary-color: #ff2d78;
+  --success-color: #39ff14;
+  --success-glow: rgba(57, 255, 20, 0.6);
+  --error-color: #ff2d78;
+  --error-glow: rgba(255, 45, 120, 0.6);
+  
+  --shadow-dark: rgba(163, 177, 198, 0.5);
+  --shadow-dark-deep: rgba(163, 177, 198, 0.8);
+  --shadow-light: rgba(255, 255, 255, 0.7);
+  --shadow-light-bright: rgba(255, 255, 255, 0.95);
+  --glare-highlight: rgba(255, 255, 255, 0.6);
+  --glare-subtle: rgba(255, 255, 255, 0.3);
+  
+  --chip-bg: linear-gradient(145deg, #ffffff, #e8ecf0);
+  --chip-color: #5c6370;
+  --chip-active-bg: linear-gradient(135deg, #ff6b35, #ff2d78);
+  --chip-active-color: #ffffff;
+  --group-header-bg: #e0e5ea;
+  --bubble-bg: #ffffff;
+  --extruded-bg: linear-gradient(145deg, #ffffff, #e8ecf0);
+  --extruded-color: #5c6370;
+  --device-img-bg: #e8ecf0;
+  --input-color: #1a1a2e;
+  --footer-color: #9ea7b0;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  /* Remove any default outlines and ensure full viewport coverage */
+  outline: none !important;
+  scroll-behavior: smooth;
+  /* Ensure html itself has the background color */
+  background-color: var(--bg-color);
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  overflow-x: hidden;
+  padding-top: 40px;
+  padding-bottom: 120px;
+  transition: background-color 0.4s ease, color 0.4s ease;
+  /* Fill the entire viewport with the app background - no visible square behind rounded corners */
+  position: relative;
+  /* Override any browser default outlines */
+  outline: none !important;
+  border: none !important;
+}
+
+/* Extend the app background to fill the entire viewport AND add atmospheric radial lighting */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: 
+    /* Lighter center for pop-out effect - creates "spotlight on foreground" illusion */
+    radial-gradient(
+      ellipse 120% 90% at 50% 40%,
+      rgba(255,255,255,0.06) 0%,
+      rgba(255,255,255,0.03) 40%,
+      transparent 70%
+    ),
+    var(--bg-color);
+  pointer-events: none;
+  z-index: -1;
+  transition: background 0.4s ease;
+}
+
+/* Ensure the root element also blends seamlessly */
+#root {
+  width: 100%;
+  max-width: 480px;
+  padding: 0 20px 60px 20px;
+  /* Ensure no background or border creates a frame effect */
+  background-color: transparent;
+  border: none;
+  outline: none;
+  box-shadow: none;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 24px;
+}
+
+.app-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 5px;
+}
+
+.app-title {
+  font-size: 1.6rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 4px 10px rgba(0,0,0,0.3));
+  letter-spacing: 0.02rem;
+  text-transform: uppercase;
+}
+
+/* --- EXTREME 3D NEUMORPHISM --- */
+
+/* Grain texture overlay for organic tactile feel */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 128px 128px;
+}
+
+/* 3D Pop-out containers - look like they're pressed FORWARD from the background */
+.bump {
+  background: linear-gradient(145deg, var(--bg-elevated), var(--bg-color));
+  border-radius: var(--border-radius-lg);
+  /* Multi-layer shadow that creates FORWARD depth — 6-layer stack */
+  box-shadow: 
+    /* Layer 1: Tight pop — immediate 3D lift */
+    4px 4px 8px var(--shadow-dark),
+    /* Layer 2: Mid-distance depth */
+    10px 10px 20px var(--shadow-dark-deep),
+    /* Layer 3: Deep cast shadow */
+    24px 24px 48px rgba(0,0,0,0.35),
+    /* Layer 4: Far ambient occlusion */
+    40px 40px 80px rgba(0,0,0,0.15),
+    /* Layer 5: Top-left soft highlight lift */
+    -4px -4px 10px var(--shadow-light),
+    /* Layer 6: Top-left bright rim light */
+    -12px -12px 24px var(--shadow-light-bright),
+    /* Inner depth layer */
+    inset 1px 1px 2px var(--glare-highlight),
+    inset -1px -1px 1px rgba(0,0,0,0.08);
+  border: 1px solid rgba(255,255,255,0.03);
+  padding: 20px;
+  position: relative;
+  /* Push forward with transform */
+  transform: translateZ(15px);
+  transition: background 0.4s ease, box-shadow 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.bump::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    135deg,
+    var(--glare-highlight) 0%,
+    transparent 30%,
+    transparent 65%,
+    rgba(0,0,0,0.04) 100%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Glassmorphism variant — frosted glass with backdrop blur */
+.glass {
+  background: linear-gradient(135deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01));
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: var(--border-radius-lg);
+  box-shadow: 
+    0 8px 32px rgba(0,0,0,0.2),
+    inset 0 1px 0 rgba(255,255,255,0.06);
+}
+
+/* Ensure children render above the glare overlay */
+.bump > * {
+  position: relative;
+  z-index: 1;
+}
+
+.bump.breathe {
+  animation: breathe 6s infinite ease-in-out;
+  will-change: transform, box-shadow;
+  contain: style;
+}
+
+@keyframes breathe {
+  0%, 100% {
+    transform: scale(0.992);
+    box-shadow: 
+      4px 4px 8px var(--shadow-dark),
+      10px 10px 20px var(--shadow-dark-deep),
+      -4px -4px 8px var(--shadow-light),
+      -10px -10px 20px var(--shadow-light-bright),
+      inset 1px 1px 2px var(--glare-highlight),
+      inset -1px -1px 1px rgba(0,0,0,0.06);
+  }
+  50% {
+    transform: scale(1.008);
+    box-shadow: 
+      8px 8px 18px var(--shadow-dark),
+      22px 22px 44px var(--shadow-dark-deep),
+      -8px -8px 18px var(--shadow-light),
+      -22px -22px 44px var(--shadow-light-bright),
+      inset 2px 2px 3px var(--glare-highlight),
+      inset -1px -1px 2px rgba(0,0,0,0.1);
+  }
+}
+
+.dent {
+  background: linear-gradient(145deg, var(--bg-color), var(--bg-elevated));
+  border-radius: var(--border-radius-md);
+  /* Multi-layer inset shadow — deeper carved-in feel */
+  box-shadow: 
+    inset 4px 4px 8px var(--shadow-dark),
+    inset 12px 12px 24px var(--shadow-dark-deep),
+    inset 20px 20px 40px rgba(0,0,0,0.3),
+    inset -3px -3px 6px var(--shadow-light),
+    inset -8px -8px 16px var(--shadow-light-bright);
+  border: none;
+  transition: background 0.4s ease, box-shadow 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes floatSlow {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33% { transform: translateY(-8px) rotate(1deg); }
+  66% { transform: translateY(4px) rotate(-1deg); }
+}
+
+/* --- COMPACT CHIP WRAPPER --- */
+.chip-wrapper {
+  background: var(--bg-color);
+  padding: 12px;
+  border-radius: 20px;
+  box-shadow: 
+    inset 6px 6px 12px var(--shadow-dark), 
+    inset -4px -4px 10px var(--shadow-light);
+  margin-bottom: 5px;
+  position: relative;
+  filter: url('#goo'); 
+  overflow: visible;
+  transition: background-color 0.4s ease, box-shadow 0.4s ease;
+}
+
+.chip-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.manufacturer-chip {
+  background: var(--chip-bg);
+  border-radius: 8px;
+  padding: 8px;
+  color: var(--chip-color);
+  font-size: 0.6rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.05rem;
+  box-shadow: 
+    4px 4px 8px var(--shadow-dark), 
+    -2px -2px 6px var(--shadow-light);
+  transition: transform 0.1s ease-out, background 0.4s ease, color 0.4s ease, box-shadow 0.4s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: 38px;
+  cursor: pointer;
+  position: relative;
+  z-index: 2;
+  will-change: transform, box-shadow;
+  overflow: hidden;
+}
+
+/* --- THE TURQUOISE ACTIVE STATE --- */
+.manufacturer-chip.active {
+  background: var(--chip-active-bg);
+  color: var(--chip-active-color);
+  box-shadow: 
+    /* Pressed-in depth — the chip sits dented */
+    inset 4px 4px 10px rgba(0, 0, 0, 0.3),
+    /* Tight rim glow — wraps the edge, what you asked for */
+    0 0 6px var(--primary-glow),
+    /* Mid halo — visible aura */
+    0 0 18px var(--primary-glow),
+    /* Soft outer bloom */
+    0 0 36px var(--primary-glow);
+  transform: scale(0.94) !important;
+  border: none;
+}
+
+/* Active chip: show the border ring permanently, with glow */
+.manufacturer-chip.active::after {
+  opacity: 1;
+  filter: drop-shadow(0 0 6px var(--primary-glow));
+}
+
+/* --- DUST PARTICLES EFFECT --- */
+.dust-container {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.dust-particle {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.8);
+  width: 1px;
+  height: 1.1px;
+  border-radius: 50%;
+  box-shadow: 0 0 3px rgba(255, 255, 255, 0.4);
+  animation: drift linear infinite, shimmer ease-in-out infinite;
+}
+
+@keyframes drift {
+  from { transform: translate(0, 0); }
+  to { transform: translate(var(--dx), var(--dy)); }
+}
+
+@keyframes shimmer {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 0.8; }
+}
+
+/* Compact Halo */
+.manufacturer-chip::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    var(--angle, 135deg),
+    var(--primary-color),
+    rgba(255,255,255,0.4),
+    var(--primary-color)
+  );
+  -webkit-mask: 
+     linear-gradient(#fff 0 0) content-box, 
+     linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  filter: drop-shadow(0 0 4px var(--primary-glow));
+}
+
+.manufacturer-chip:hover::after {
+  opacity: 1;
+}
+
+.manufacturer-chip.snapping {
+  transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* --- REFINED LIST UI --- */
+
+.device-list-container {
+  background: var(--bg-color);
+  border-radius: var(--border-radius-md);
+  box-shadow: 0 20px 60px var(--shadow-dark);
+  border: 1px solid rgba(255,255,255,0.04);
+  overflow: hidden;
+  margin-top: 10px;
+  transition: background 0.4s ease;
+}
+
+/* Layer content above wave border pseudo-elements */
+.device-list-container.wave-border > * {
+  position: relative;
+  z-index: 2;
+}
+
+.group-header {
+  padding: 14px 20px;
+  font-size: 0.75rem;
+  font-weight: 950;
+  color: var(--primary-color);
+  text-transform: uppercase;
+  letter-spacing: 0.15rem;
+  background: var(--group-header-bg);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  transition: background 0.4s ease, color 0.4s ease;
+}
+
+.device-item {
+  margin: 4px 10px;
+  padding: 12px 15px;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.device-item:hover {
+  background: rgba(128, 128, 128, 0.08);
+  transform: translateX(8px);
+}
+
+/* --- REFINED TEST INPUTS --- */
+
+input.dent {
+  width: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--input-color);
+  font-size: 1.25rem;
+  font-weight: 800;
+  padding: 14px 18px;
+  transition: color 0.4s ease;
+}
+
+input.dent::placeholder {
+  color: var(--footer-color);
+  font-weight: 400;
+  font-size: 0.85rem;
+}
+
+.status-indicator {
+  height: 12px;
+  width: 12px;
+  border-radius: 50%;
+  box-shadow: 0 0 10px currentColor;
+}
+
+/* --- PREMIUM RESULT BUBBLE --- */
+
+.bubble {
+  padding: 24px;
+  border-radius: var(--border-radius-lg);
+  background: var(--bubble-bg);
+  box-shadow: 20px 20px 40px var(--shadow-dark), -10px -10px 30px var(--shadow-light);
+  position: relative;
+  overflow: hidden;
+  transition: background 0.4s ease, box-shadow 0.4s ease;
+}
+
+/* Pass glow ring animation */
+.bubble-pass {
+  animation: bubblePassIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  box-shadow: 
+    0 0 40px var(--success-glow),
+    0 0 80px var(--success-glow),
+    inset 0 0 30px rgba(0, 255, 136, 0.08);
+  border: 1px solid rgba(0, 255, 136, 0.3) !important;
+}
+
+.bubble-fail {
+  animation: bubbleFailShake 0.5s ease-out forwards;
+  box-shadow: 
+    0 0 30px var(--error-glow),
+    inset 0 0 20px rgba(255, 64, 96, 0.05);
+  border: 1px solid rgba(255, 64, 96, 0.25) !important;
+}
+
+@keyframes bubblePassIn {
+  0% { 
+    transform: scale(0.85); 
+    opacity: 0.3;
+  }
+  50% {
+    transform: scale(1.03);
+  }
+  100% { 
+    transform: scale(1); 
+    opacity: 1;
+  }
+}
+
+@keyframes bubbleFailShake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
+  20%, 40%, 60%, 80% { transform: translateX(4px); }
+}
+
+/* Glow particles emanating from pass bubble */
+.glow-particles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.glow-particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--success-color);
+  box-shadow: 0 0 8px var(--success-glow);
+  animation: floatUp 1.5s ease-out forwards;
+}
+
+@keyframes floatUp {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-80px) scale(0);
+    opacity: 0;
+  }
+}
+
+/* --- SCANLINES / HUD EFFECT --- */
+.scanlines {
+  position: relative;
+}  .scanlines::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 242, 255, 0.012) 2px,
+    rgba(0, 242, 255, 0.012) 4px
+  );
+  border-radius: inherit;
+}
+
+/* Light-theme scanline overrides */
+[data-theme="light"] .scanlines::after {
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(255, 107, 53, 0.01) 2px,
+    rgba(255, 107, 53, 0.01) 4px
+  );
+}
+
+/* Glow border that animates — organic pulsing edge */
+@keyframes glowBorderRotate {
+  0% { filter: hue-rotate(0deg); opacity: 0.15; }
+  50% { filter: hue-rotate(15deg); opacity: 0.3; }
+  100% { filter: hue-rotate(0deg); opacity: 0.15; }
+}
+
+.glow-border-animated {
+  position: relative;
+}
+
+.glow-border-animated::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  padding: 2px;
+  background: conic-gradient(
+    from 0deg,
+    var(--primary-color),
+    transparent 25%,
+    var(--primary-color) 50%,
+    transparent 75%,
+    var(--primary-color)
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0.15;
+  pointer-events: none;
+  animation: glowBorderRotate 4s ease-in-out infinite;
+}
+
+/* --- GLOW BORDER (static, no animation) --- */
+.glow-border {
+  position: relative;
+}
+
+.glow-border::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    135deg,
+    var(--primary-color),
+    rgba(0, 242, 255, 0.1) 40%,
+    var(--primary-color)
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+/* --- PULSE INDICATOR --- */
+.pulse-pass {
+  animation: pulsePass 2s ease-in-out infinite;
+}
+
+.pulse-fail {
+  animation: pulseFail 1.5s ease-in-out infinite;
+}
+
+@keyframes pulsePass {
+  0%, 100% { 
+    box-shadow: 0 0 8px var(--success-glow), 0 0 16px var(--success-glow); 
+  }
+  50% { 
+    box-shadow: 0 0 18px var(--success-glow), 0 0 36px var(--success-glow); 
+  }
+}
+
+@keyframes pulseFail {
+  0%, 100% { 
+    box-shadow: 0 0 6px var(--error-glow), 0 0 12px var(--error-glow); 
+  }
+  50% { 
+    box-shadow: 0 0 14px var(--error-glow), 0 0 28px var(--error-glow); 
+  }
+}
+
+/* --- SHIMMER TEXT EFFECT --- */
+.shimmer-text {
+  background: linear-gradient(
+    90deg,
+    var(--primary-color) 0%,
+    #fff 25%,
+    var(--primary-color) 50%,
+    #fff 75%,
+    var(--primary-color) 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmerText 3s linear infinite;
+}
+
+@keyframes shimmerText {
+  to { background-position: 200% center; }
+}
+
+/* --- FLOATING ORB ANIMATION --- */
+@keyframes floatOrb {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33% { transform: translateY(-6px) rotate(1deg); }
+  66% { transform: translateY(3px) rotate(-1deg); }
+}
+
+/* --- ENHANCED EXTRUDED BUTTONS --- */
+.extruded {
+  background: var(--extruded-bg);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  color: var(--extruded-color);
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 8px 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  box-shadow: 
+    4px 4px 8px var(--shadow-dark),
+    10px 10px 20px var(--shadow-dark-deep),
+    -3px -3px 6px var(--shadow-light),
+    -8px -8px 16px var(--shadow-light-bright),
+    inset 1px 1px 1px var(--glare-highlight),
+    inset -1px -1px 1px rgba(0,0,0,0.05);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
+  position: relative;
+  overflow: visible;
+}
+
+.extruded::before {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: inherit;
+  background: linear-gradient(
+    135deg,
+    var(--primary-color) 0%,
+    transparent 50%,
+    var(--primary-color) 100%
+  );
+  opacity: 0;
+  z-index: -1;
+  transition: opacity 0.3s ease;
+  filter: blur(4px);
+}
+
+.extruded::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    135deg,
+    var(--glare-highlight) 0%,
+    transparent 40%,
+    transparent 100%
+  );
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+}
+
+.extruded:hover {
+  box-shadow: 
+    6px 6px 14px var(--shadow-dark),
+    16px 16px 32px var(--shadow-dark-deep),
+    -4px -4px 10px var(--shadow-light),
+    -12px -12px 24px var(--shadow-light-bright),
+    inset 2px 2px 2px var(--glare-highlight),
+    inset -1px -1px 1px rgba(0,0,0,0.05);
+  transform: translateY(-3px);
+  color: var(--primary-color);
+}
+
+.extruded:hover::before {
+  opacity: 0.15;
+}
+
+.extruded:active {
+  box-shadow: 
+    inset 6px 6px 14px var(--shadow-dark-deep),
+    inset 12px 12px 28px var(--shadow-dark),
+    inset -3px -3px 8px var(--shadow-light),
+    inset -8px -8px 18px var(--shadow-light-bright),
+    inset 1px 1px 2px rgba(0,0,0,0.1);
+  transform: translateY(2px);
+  color: var(--primary-color);
+}
+
+/* Header icon buttons - larger and more prominent, with subtle toxic purple aura */
+.header-btn {
+  width: 44px !important;
+  height: 44px !important;
+  padding: 0 !important;
+  border-radius: 14px !important;
+  position: relative;
+  /* Subtle permanent purple glow — barely there, not distracting */
+  box-shadow: 
+    4px 4px 8px var(--shadow-dark),
+    10px 10px 20px var(--shadow-dark-deep),
+    -3px -3px 6px var(--shadow-light),
+    -8px -8px 16px var(--shadow-light-bright),
+    inset 1px 1px 1px var(--glare-highlight),
+    inset -1px -1px 1px rgba(0,0,0,0.05),
+    0 0 10px rgba(160, 40, 250, 0.08) !important;
+}
+
+/* Override extruded glow ring to toxic purple for header buttons */
+.header-btn::before {
+  background: linear-gradient(
+    135deg,
+    rgba(160, 40, 250, 0.7) 0%,
+    transparent 50%,
+    rgba(160, 40, 250, 0.5) 100%
+  ) !important;
+}
+
+.header-btn:hover {
+  box-shadow: 
+    6px 6px 14px var(--shadow-dark),
+    16px 16px 32px var(--shadow-dark-deep),
+    -4px -4px 10px var(--shadow-light),
+    -12px -12px 24px var(--shadow-light-bright),
+    inset 2px 2px 2px var(--glare-highlight),
+    inset -1px -1px 1px rgba(0,0,0,0.05),
+    0 0 18px rgba(160, 40, 250, 0.14) !important;
+}
+
+.header-btn:active {
+  box-shadow: 
+    inset 6px 6px 14px var(--shadow-dark-deep),
+    inset 12px 12px 28px var(--shadow-dark),
+    inset -3px -3px 8px var(--shadow-light),
+    inset -8px -8px 18px var(--shadow-light-bright),
+    inset 1px 1px 2px rgba(0,0,0,0.1),
+    0 0 8px rgba(160, 40, 250, 0.06) !important;
+}
+
+/* Home button in header - slightly brighter purple glow than siblings */
+.header-home-btn {
+  box-shadow: 
+    4px 4px 10px var(--shadow-dark),
+    12px 12px 24px var(--shadow-dark-deep),
+    -3px -3px 8px var(--shadow-light),
+    -10px -10px 20px var(--shadow-light-bright),
+    inset 1px 1px 2px var(--glare-highlight),
+    0 0 14px rgba(160, 40, 250, 0.18) !important;
+}
+
+.header-home-btn:hover {
+  box-shadow: 
+    6px 6px 16px var(--shadow-dark),
+    18px 18px 36px var(--shadow-dark-deep),
+    -4px -4px 12px var(--shadow-light),
+    -14px -14px 28px var(--shadow-light-bright),
+    inset 2px 2px 3px var(--glare-highlight),
+    0 0 22px rgba(160, 40, 250, 0.26) !important;
+}
+
+.header-home-btn:active {
+  box-shadow: 
+    inset 6px 6px 14px var(--shadow-dark-deep),
+    inset 12px 12px 28px var(--shadow-dark),
+    inset -3px -3px 8px var(--shadow-light),
+    inset -8px -8px 18px var(--shadow-light-bright),
+    0 0 10px rgba(160, 40, 250, 0.12) !important;
+}
+
+.header-btn .icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: box-shadow 0.15s ease;
+  border-radius: 8px;
+  position: relative;
+  /* Subtle inset base for depth - makes icon look embedded/3D */
+  box-shadow: 
+    inset 1px 1px 2px rgba(0,0,0,0.15),
+    inset -1px -1px 1px rgba(255,255,255,0.05);
+}
+
+/* Icon wrapper shows dent effect - pressed inward with deeper inset shadows */
+.header-btn:active .icon-wrapper {
+  box-shadow: 
+    inset 3px 3px 6px var(--shadow-dark-deep),
+    inset 5px 5px 12px var(--shadow-dark),
+    inset -1px -1px 3px rgba(255,255,255,0.03);
+}
+
+/* The SVG icon stays perfectly centered - no transform that could shift it */
+.header-btn .icon-wrapper svg {
+  /* No transition or transform - icon stays fixed in center */
+}
+
+/* Wave ripple effect - spreads from click point, purple for header buttons */
+.header-btn .wave-ripple {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(160, 40, 250, 0.5) 0%, transparent 70%);
+  pointer-events: none;
+  transform: translate(-50%, -50%) scale(0);
+  animation: waveExpand 0.7s ease-out forwards;
+  z-index: 10;
+}
+
+@keyframes waveExpand {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0.5;
+  }
+  30% {
+    opacity: 0.35;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(3);
+    opacity: 0;
+  }
+}
+
+/* Ripple effect — barely-there shimmer instead of 80s flash */
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(160, 200, 255, 0.35) 0%, transparent 70%);
+  opacity: 0;
+  transform: scale(0);
+  animation: rippleOut 0.5s ease-out forwards;
+  pointer-events: none;
+}
+
+@keyframes rippleOut {
+  0% {
+    opacity: 0.12;
+    transform: scale(0.3);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.8);
+  }
+}
+
+/* --- HUD DATA READOUT --- */
+.hud-label {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12rem;
+  color: var(--footer-color);
+}
+
+.hud-value {
+  font-family: var(--font-mono);
+  font-size: 1.4rem;
+  font-weight: 900;
+  color: var(--primary-color);
+  text-shadow: 0 0 12px var(--primary-glow);
+}
+
+/* --- UTILITIES & LAYOUT --- */
+
+/* Neumorphic icon depth - gives SVG icons the 3D plastic look */
+.icon-neumorph {
+  filter: 
+    drop-shadow(2px 2px 3px var(--shadow-dark))
+    drop-shadow(-1px -1px 2px var(--shadow-light));
+  transition: filter 0.3s ease;
+}
+
+.icon-neumorph-glow {
+  filter: 
+    drop-shadow(2px 2px 3px var(--shadow-dark))
+    drop-shadow(-1px -1px 2px var(--shadow-light))
+    drop-shadow(0 0 10px var(--primary-glow));
+  transition: filter 0.3s ease;
+}
+
+.device-img-fancy {
+  border-radius: 18px;
+  background: var(--device-img-bg);
+  box-shadow: inset 4px 4px 10px var(--shadow-dark), 8px 8px 16px var(--shadow-dark);
+  padding: 15px;
+  transition: all 0.4s ease;
+}
+
+.flex-col { display: flex; flex-direction: column; }
+.flex-row { display: flex; flex-direction: row; }
+.align-center { align-items: center; }
+.justify-center { justify-content: center; }
+.justify-between { justify-content: space-between; }
+.gap-xs { gap: 6px; }
+.gap-sm { gap: 12px; }
+.gap-md { gap: 24px; }
+.w-full { width: 100%; }
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-thumb { background: var(--primary-color); border-radius: 10px; }
+
+.status-success { color: var(--success-color); background: var(--success-color); }
+.status-error { color: var(--error-color); background: var(--error-color); }
+.status-pending { color: var(--warning-color, #f1c40f); background: var(--warning-color, #f1c40f); }
+
+.copyable:active { transform: scale(0.9); }
+
+.app-footer {
+  margin-top: 40px;
+  padding-bottom: 20px;
+  text-align: center;
+  font-size: 0.7rem;
+  color: var(--footer-color);
+  letter-spacing: 0.05rem;
+  text-transform: uppercase;
+  transition: color 0.4s ease;
+}
+
+.svg-filters {
+  position: absolute;
+  width: 0;
+  height: 0;
+  visibility: hidden;
+}
+
+/* --- COPY TOAST ANIMATION --- */
+
+@keyframes toastPop {
+  0% { transform: translateX(-50%) translateY(8px) scale(0.8); opacity: 0; }
+  100% { transform: translateX(-50%) translateY(0) scale(1); opacity: 1; }
+}
+
+/* --- FLOATING NEUMORPHIC HOME BUTTON --- */
+
+.floating-home {
+  position: fixed;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  background: linear-gradient(145deg, var(--bg-elevated), var(--bg-color));
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 50px;
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  color: var(--primary-color);
+  font-weight: 800;
+  font-size: 0.85rem;
+  letter-spacing: 0.03rem;
+  box-shadow: 
+    4px 4px 8px var(--shadow-dark),
+    12px 12px 24px var(--shadow-dark-deep),
+    -3px -3px 6px var(--shadow-light),
+    -10px -10px 20px var(--shadow-light-bright),
+    inset 1px 1px 2px var(--glare-highlight),
+    0 8px 32px rgba(0, 242, 255, 0.08);
+  animation: fabCinematic 3.5s ease-in-out infinite, fabGlow 2.5s ease-in-out infinite;
+  transform-origin: center center;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  overflow: hidden;
+}
+
+.floating-home::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    135deg,
+    var(--glare-highlight) 0%,
+    transparent 40%,
+    transparent 100%
+  );
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.floating-home:hover {
+  transform: translateX(-50%) translateY(-4px) scale(1.04);
+  box-shadow: 
+    6px 6px 12px var(--shadow-dark),
+    18px 18px 36px var(--shadow-dark-deep),
+    -4px -4px 10px var(--shadow-light),
+    -14px -14px 30px var(--shadow-light-bright),
+    inset 2px 2px 3px var(--glare-highlight),
+    0 12px 40px rgba(0, 242, 255, 0.15);
+}
+
+.floating-home:active {
+  transform: translateX(-50%) translateY(0px) scale(0.96);
+  box-shadow: 
+    inset 4px 4px 8px var(--shadow-dark),
+    inset 10px 10px 20px var(--shadow-dark-deep),
+    inset -2px -2px 5px var(--shadow-light),
+    inset -6px -6px 14px var(--shadow-light-bright);
+}
+
+.floating-home .fab-icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  box-shadow: 
+    0 2px 8px var(--primary-glow),
+    inset 0 1px 0 rgba(255,255,255,0.3);
+  flex-shrink: 0;
+}/* Cinematic floating animation with rotation and scale */
+@keyframes fabCinematic {
+  0%, 100% {
+    transform: translateX(-50%) translateY(0px) rotate(0deg) scale(1);
+    filter: brightness(1) drop-shadow(0 0 0px var(--primary-color));
+  }
+  15% {
+    transform: translateX(-50%) translateY(-4px) rotate(-1.5deg) scale(1.01);
+    filter: brightness(1.05) drop-shadow(0 4px 12px var(--primary-color));
+  }
+  30% {
+    transform: translateX(-50%) translateY(-8px) rotate(0.5deg) scale(1.02);
+    filter: brightness(1.1) drop-shadow(0 6px 20px var(--primary-color));
+  }
+  50% {
+    transform: translateX(-50%) translateY(-12px) rotate(0deg) scale(1);
+    filter: brightness(1.15) drop-shadow(0 8px 30px var(--primary-color));
+  }
+  70% {
+    transform: translateX(-50%) translateY(-7px) rotate(1deg) scale(1.01);
+    filter: brightness(1.08) drop-shadow(0 5px 16px var(--primary-color));
+  }
+  85% {
+    transform: translateX(-50%) translateY(-3px) rotate(-0.5deg) scale(1);
+    filter: brightness(1.02) drop-shadow(0 2px 8px var(--primary-color));
+  }
+}
+
+@keyframes fabGlow {
+  0%, 100% { box-shadow: 4px 4px 8px var(--shadow-dark), 12px 12px 24px var(--shadow-dark-deep), -3px -3px 6px var(--shadow-light), -10px -10px 20px var(--shadow-light-bright), inset 1px 1px 2px var(--glare-highlight), 0 8px 32px rgba(0, 242, 255, 0.06); }
+  50% { box-shadow: 4px 4px 8px var(--shadow-dark), 12px 12px 24px var(--shadow-dark-deep), -3px -3px 6px var(--shadow-light), -10px -10px 20px var(--shadow-light-bright), inset 1px 1px 2px var(--glare-highlight), 0 8px 40px rgba(0, 242, 255, 0.14); }
+}
+
+/* --- RESET BUTTON VARIANT --- */
+.floating-reset {
+  position: fixed;
+  bottom: 100px;
+  right: 24px;
+  z-index: 100;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(145deg, var(--bg-elevated), var(--bg-color));
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 
+    3px 3px 6px var(--shadow-dark),
+    10px 10px 20px var(--shadow-dark-deep),
+    -2px -2px 5px var(--shadow-light),
+    -8px -8px 16px var(--shadow-light-bright),
+    inset 1px 1px 2px var(--glare-highlight);
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  animation: floatSlow 5s ease-in-out infinite;
+}
+
+.floating-reset:hover {
+  transform: translateY(-3px) scale(1.08);
+  box-shadow: 
+    5px 5px 10px var(--shadow-dark),
+    15px 15px 30px var(--shadow-dark-deep),
+    -3px -3px 8px var(--shadow-light),
+    -12px -12px 24px var(--shadow-light-bright),
+    inset 2px 2px 3px var(--glare-highlight),
+    0 0 20px var(--error-glow);
+}
+
+.floating-reset:active {
+  transform: translateY(0px) scale(0.94);
+  box-shadow: 
+    inset 3px 3px 6px var(--shadow-dark),
+    inset 8px 8px 16px var(--shadow-dark-deep),
+    inset -2px -2px 4px var(--shadow-light),
+    inset -5px -5px 10px var(--shadow-light-bright);
+}
+
+/* --- THEME TOGGLE ENHANCED --- */
+.theme-toggle {
+  width: 40px;
+  height: 40px;
+  border-radius: 14px;
+  background: linear-gradient(145deg, var(--bg-elevated), var(--bg-color));
+  border: 1px solid rgba(255,255,255,0.03);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 
+    3px 3px 6px var(--shadow-dark),
+    8px 8px 14px var(--shadow-dark-deep),
+    -2px -2px 5px var(--shadow-light),
+    -6px -6px 12px var(--shadow-light-bright),
+    inset 1px 1px 2px var(--glare-highlight);
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  overflow: hidden;
+}
+
+.theme-toggle::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(135deg, var(--glare-highlight) 0%, transparent 50%, transparent 100%);
+  pointer-events: none;
+}
+
+.theme-toggle:hover {
+  transform: translateY(-2px) scale(1.06);
+  box-shadow: 
+    5px 5px 10px var(--shadow-dark),
+    12px 12px 20px var(--shadow-dark-deep),
+    -3px -3px 7px var(--shadow-light),
+    -9px -9px 18px var(--shadow-light-bright),
+    inset 2px 2px 3px var(--glare-highlight);
+}
+
+.theme-toggle:active {
+  transform: translateY(1px) scale(0.94);
+  box-shadow: 
+    inset 3px 3px 6px var(--shadow-dark),
+    inset 8px 8px 14px var(--shadow-dark-deep),
+    inset -2px -2px 4px var(--shadow-light),
+    inset -5px -5px 10px var(--shadow-light-bright);
+}
+
+/* --- SPIN ANIMATION (for loading spinners) --- */
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* --- CARD ENTRANCE ANIMATION --- */
+@keyframes animateIn {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.96);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-in {
+  animation: animateIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* --- BREATHING GLOW PULSE for containers --- */
+@keyframes containerPulse {
+  0%, 100% {
+    box-shadow: 
+      6px 6px 12px var(--shadow-dark),
+      16px 16px 32px var(--shadow-dark-deep),
+      -6px -6px 12px var(--shadow-light),
+      -16px -16px 32px var(--shadow-light-bright),
+      inset 1px 1px 2px var(--glare-highlight),
+      0 0 0px var(--primary-glow);
+  }
+  50% {
+    box-shadow: 
+      6px 6px 12px var(--shadow-dark),
+      16px 16px 32px var(--shadow-dark-deep),
+      -6px -6px 12px var(--shadow-light),
+      -16px -16px 32px var(--shadow-light-bright),
+      inset 1px 1px 2px var(--glare-highlight),
+      0 0 30px var(--primary-glow);
+  }
+}
+
+.bump.pulse-glow {
+  animation: breathe 6s infinite ease-in-out, containerPulse 4s infinite ease-in-out;
+}
+
+/* ═══════════════════════════════════════════
+   ASSISTANT BUTTON ANIMATIONS
+   ═══════════════════════════════════════════ */
+
+/* --- Magical Wand Sparkle (Assistent launch button) --- */
+@keyframes wandPulse {
+  0%, 100% {
+    box-shadow: 
+      4px 4px 8px var(--shadow-dark),
+      10px 10px 20px var(--shadow-dark-deep),
+      -3px -3px 6px var(--shadow-light),
+      -8px -8px 16px var(--shadow-light-bright),
+      inset 1px 1px 2px var(--glare-highlight),
+      0 0 8px rgba(0, 242, 255, 0.1);
+  }
+  50% {
+    box-shadow: 
+      4px 4px 8px var(--shadow-dark),
+      10px 10px 20px var(--shadow-dark-deep),
+      -3px -3px 6px var(--shadow-light),
+      -8px -8px 16px var(--shadow-light-bright),
+      inset 1px 1px 2px var(--glare-highlight),
+      0 0 22px rgba(0, 242, 255, 0.25),
+      0 0 40px rgba(0, 242, 255, 0.08);
+  }
+}
+
+@keyframes wandIconSpin {
+  0%, 100% { transform: rotate(0deg) scale(1); }
+  25% { transform: rotate(-5deg) scale(1.1); }
+  75% { transform: rotate(5deg) scale(1.05); }
+}
+
+@keyframes sparkleTrail {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0);
+  }
+  50% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--stx), var(--sty)) scale(0.3);
+  }
+}
+
+.assistant-launch-btn {
+  animation: wandPulse 3s ease-in-out infinite;
+  position: relative;
+  overflow: visible !important;
+  width: 100%;
+}
+
+/* Wand icon — clean, no distracting animation */
+.assistant-launch-btn .wand-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sparkle-particle {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background: var(--primary-color);
+  box-shadow: 0 0 5px var(--primary-glow), 0 0 10px var(--primary-glow);
+  pointer-events: none;
+  animation: sparkleTrail 1.5s ease-out infinite;
+}
+
+/* --- OLD ASSISTANT BUTTON ANIMATIONS (kept for DeviceAssistant component) --- */
+  position: absolute;
+  inset: -4px;
+  border-radius: 22px;
+  background: conic-gradient(
+    from var(--ring-angle, 0deg),
+    transparent 0deg,
+    var(--primary-color) 40deg,
+    transparent 80deg,
+    var(--secondary-color) 160deg,
+    transparent 200deg,
+    var(--primary-color) 280deg,
+    transparent 320deg,
+    transparent 360deg
+  );
+  opacity: 0.5;
+  filter: blur(3px);
+  animation: ringSpin 6s linear infinite;
+  pointer-events: none;
+  z-index: 0;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  padding: 2px;
+}
+
+@keyframes ringSpin {
+  0%   { --ring-angle: 0deg; }
+  100% { --ring-angle: 360deg; }
+}
+
+@property --ring-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+/* Floating spark particles around the button */
+.assistant-spark {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--primary-color);
+  box-shadow: 0 0 6px var(--primary-glow), 0 0 14px var(--primary-color);
+  pointer-events: none;
+  z-index: 2;
+  animation: sparkOrbit 3s ease-in-out infinite;
+  opacity: 0;
+}
+
+@keyframes sparkOrbit {
+  0%   { opacity: 0; transform: translate(0, 0) scale(0.3); }
+  25%  { opacity: 0.9; }
+  50%  { opacity: 0.4; transform: translate(var(--sx, 8px), var(--sy, -12px)) scale(1.2); }
+  75%  { opacity: 0.85; }
+  100% { opacity: 0; transform: translate(0, 0) scale(0.3); }
+}
+
+/* The main button — pure neumorphism, blending with the background */
+.assistant-launch-btn {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 82%;
+  max-width: 340px;
+  padding: 22px 32px;
+  background: linear-gradient(145deg, var(--bg-elevated), var(--bg-color));
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  border-radius: 20px;
+  cursor: pointer;
+  font-family: inherit;
+  /* Pure neumorphic shadow — no glow aura, just depth */
+  box-shadow:
+    6px 8px 18px var(--shadow-dark),
+    16px 20px 40px var(--shadow-dark-deep),
+    -4px -6px 12px var(--shadow-light),
+    -10px -14px 24px var(--shadow-light-bright),
+    inset 1px 1px 2px var(--glare-highlight),
+    inset -1px -1px 1px rgba(0,0,0,0.08);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+}
+
+/* assistantBreathe removed — button is now static neumorphic, no pulsing */
+
+/* Hover — gentle lift, no glow */
+.assistant-launch-btn:hover {
+  transform: translateY(-3px) scale(1.01);
+  border-color: rgba(255, 255, 255, 0.06);
+  box-shadow:
+    8px 10px 22px var(--shadow-dark),
+    20px 26px 48px var(--shadow-dark-deep),
+    -6px -8px 16px var(--shadow-light),
+    -14px -18px 30px var(--shadow-light-bright),
+    inset 2px 2px 3px var(--glare-highlight),
+    inset -1px -1px 1px rgba(0,0,0,0.06);
+}
+
+/* Active/pressed — sinks into the background */
+.assistant-launch-btn:active {
+  transform: translateY(2px) scale(0.97);
+  border-color: rgba(255, 255, 255, 0.03);
+  box-shadow:
+    inset 6px 8px 14px var(--shadow-dark-deep),
+    inset 14px 18px 30px var(--shadow-dark),
+    inset -3px -4px 8px var(--shadow-light),
+    inset -8px -10px 18px var(--shadow-light-bright);
+  transition: all 0.1s ease-in;
+}
+
+/* Engraved circuit traces — etched lines that glow from within */
+.assistant-engrave {
+  position: absolute;
+  left: 12%;
+  right: 12%;
+  height: 1px;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.6;
+}
+
+.assistant-engrave-top {
+  top: 18px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(0,242,255,0.1) 5%,
+    var(--primary-color) 20%,
+    rgba(0,242,255,0.2) 25%,
+    transparent 30%,
+    transparent 35%,
+    rgba(0,242,255,0.15) 40%,
+    var(--primary-color) 48%,
+    rgba(0,242,255,0.2) 50%,
+    var(--primary-color) 52%,
+    rgba(0,242,255,0.15) 60%,
+    transparent 65%,
+    transparent 70%,
+    rgba(0,242,255,0.2) 75%,
+    var(--primary-color) 80%,
+    rgba(0,242,255,0.1) 95%,
+    transparent 100%
+  );
+  box-shadow:
+    0 1px 3px rgba(0,242,255,0.15),
+    0 0 8px rgba(0,242,255,0.08);
+  animation: engravePulse 3s ease-in-out infinite;
+}
+
+.assistant-engrave-bottom {
+  bottom: 18px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(0,242,255,0.1) 8%,
+    rgba(0,242,255,0.15) 15%,
+    var(--primary-color) 25%,
+    transparent 32%,
+    transparent 42%,
+    var(--primary-color) 50%,
+    rgba(0,242,255,0.15) 58%,
+    transparent 68%,
+    var(--primary-color) 75%,
+    rgba(0,242,255,0.1) 85%,
+    rgba(0,242,255,0.15) 92%,
+    transparent 100%
+  );
+  box-shadow:
+    0 -1px 3px rgba(0,242,255,0.15),
+    0 0 8px rgba(0,242,255,0.08);
+  animation: engravePulse 3s ease-in-out 0.6s infinite;
+}
+
+@keyframes engravePulse {
+  0%, 100% { opacity: 0.35; }
+  50%      { opacity: 0.8; }
+}
+
+/* Content wrapper */
+.assistant-btn-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  z-index: 2;
+  position: relative;
+}
+
+/* Icon — subtle, clean, no shimmer */
+.assistant-btn-icon {
+  color: var(--primary-color);
+  filter: drop-shadow(0 0 4px var(--primary-glow));
+  transition: all 0.3s ease;
+}
+
+/* iconShimmer keyframe removed — icon is now static */
+
+.assistant-launch-btn:hover .assistant-btn-icon {
+  filter: drop-shadow(0 0 8px var(--primary-glow));
+  transform: rotate(-3deg) scale(1.06);
+}
+
+.assistant-launch-btn:active .assistant-btn-icon {
+  transform: scale(0.94);
+}
+
+/* Label — clean, no text glow */
+.assistant-btn-label {
+  font-size: 1.25rem;
+  font-weight: 900;
+  letter-spacing: 0.08rem;
+  color: var(--primary-color);
+  transition: all 0.3s ease;
+}
+
+.assistant-launch-btn:hover .assistant-btn-label {
+  letter-spacing: 0.1rem;
+}
+
+/* Inner glow overlay — subtle radial shine */
+.assistant-btn-glow {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    ellipse 80% 60% at 50% 40%,
+    rgba(0, 242, 255, 0.04) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
+  z-index: 0;
+  transition: opacity 0.35s ease;
+  opacity: 0.5;
+}
+
+.assistant-launch-btn:hover .assistant-btn-glow {
+  opacity: 1;
+}
+
+/* ══ Light theme overrides ══ */
+[data-theme="light"] .assistant-spark {
+  background: var(--primary-color);
+  box-shadow: 0 0 6px var(--primary-glow), 0 0 14px var(--primary-color);
+}
+
+/* ══ Light theme overrides — neumorphic, no glow ══ */
+[data-theme="light"] .assistant-launch-btn {
+  background: linear-gradient(145deg, var(--bg-elevated), var(--bg-color));
+  border-color: rgba(0, 0, 0, 0.06);
+}
+
+/* Light theme — keep icon clean */
+[data-theme="light"] .assistant-btn-icon {
+  color: var(--primary-color);
+  filter: drop-shadow(0 0 4px var(--primary-glow));
+}
+
+/* Light theme — clean label */
+[data-theme="light"] .assistant-btn-label {
+  color: var(--primary-color);
+}
+
+/* Light theme engraved circuit traces — orange/pink toxic glow */
+[data-theme="light"] .assistant-engrave-top {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255,107,53,0.1) 5%,
+    #ff6b35 20%,
+    rgba(255,45,120,0.2) 25%,
+    transparent 30%,
+    transparent 35%,
+    rgba(255,107,53,0.15) 40%,
+    #ff2d78 48%,
+    rgba(255,45,120,0.2) 50%,
+    #ff6b35 52%,
+    rgba(255,107,53,0.15) 60%,
+    transparent 65%,
+    transparent 70%,
+    rgba(255,45,120,0.2) 75%,
+    #ff6b35 80%,
+    rgba(255,107,53,0.1) 95%,
+    transparent 100%
+  );
+  box-shadow:
+    0 1px 3px rgba(255,107,53,0.2),
+    0 0 8px rgba(255,45,120,0.1);
+}
+
+[data-theme="light"] .assistant-engrave-bottom {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255,45,120,0.1) 8%,
+    rgba(255,107,53,0.15) 15%,
+    #ff2d78 25%,
+    transparent 32%,
+    transparent 42%,
+    #ff6b35 50%,
+    rgba(255,45,120,0.15) 58%,
+    transparent 68%,
+    #ff2d78 75%,
+    rgba(255,107,53,0.1) 85%,
+    rgba(255,45,120,0.15) 92%,
+    transparent 100%
+  );
+  box-shadow:
+    0 -1px 3px rgba(255,45,120,0.2),
+    0 0 8px rgba(255,107,53,0.1);
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .assistant-launch-btn,
+  .assistant-btn-icon,
+  .assistant-engrave-top,
+  .assistant-engrave-bottom,
+  .assistant-btn-ring,
+  .assistant-spark {
+    animation: none !important;
+  }
+}
+
+/* --- OLD ASSISTANT BUTTON ANIMATIONS (kept for DeviceAssistant component) --- */
+
+/* --- Realistic Heartbeat (AED button) --- */
+@keyframes heartbeat {
+  0%   { transform: scale(1); }
+  8%   { transform: scale(1.08); }  /* lub */
+  16%  { transform: scale(1); }
+  24%  { transform: scale(1.05); }  /* dub */
+  32%  { transform: scale(1); }
+  100% { transform: scale(1); }
+}
+
+@keyframes heartbeatGlow {
+  0%   { filter: drop-shadow(0 0 6px var(--success-glow)); }
+  8%   { filter: drop-shadow(0 0 18px var(--success-glow)); }
+  16%  { filter: drop-shadow(0 0 6px var(--success-glow)); }
+  24%  { filter: drop-shadow(0 0 14px var(--success-glow)); }
+  32%  { filter: drop-shadow(0 0 6px var(--success-glow)); }
+  100% { filter: drop-shadow(0 0 6px var(--success-glow)); }
+}
+
+.assistant-btn-aed {
+  animation: heartbeat 1.4s ease-in-out infinite;
+  position: relative;
+}
+
+.assistant-btn-aed .assistant-icon {
+  animation: heartbeatGlow 1.4s ease-in-out infinite;
+}
+
+/* --- Electric Charge (Defibrillator button) --- */
+@keyframes electricCharge {
+  0%, 100% { transform: translateX(0); }
+  2%  { transform: translateX(-2px); }
+  4%  { transform: translateX(2px); }
+  6%  { transform: translateX(-1px); }
+  8%  { transform: translateX(0); }
+}
+
+@keyframes zapGlow {
+  0%, 100% { 
+    filter: drop-shadow(0 0 8px var(--primary-glow));
+    opacity: 1;
+  }
+  50% { 
+    filter: drop-shadow(0 0 24px var(--primary-glow)) drop-shadow(0 0 40px var(--primary-glow));
+    opacity: 0.9;
+  }
+}
+
+.assistant-btn-defi {
+  animation: electricCharge 3s ease-in-out infinite;
+  position: relative;
+}
+
+.assistant-btn-defi .assistant-icon {
+  animation: zapGlow 1.8s ease-in-out infinite;
+}
+
+/* Defi charge spark particles */
+@keyframes chargeSpark {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0);
+  }
+  30% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--sx), var(--sy)) scale(1);
+  }
+}
+
+.charge-spark {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--primary-color);
+  box-shadow: 0 0 6px var(--primary-glow);
+  pointer-events: none;
+  animation: chargeSpark 1.2s ease-out infinite;
+}
+
+/* --- Step Content Slide-Up Entrance --- */
+@keyframes slideUpFade {
+  0% {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.assistant-step-enter {
+  animation: slideUpFade 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* --- Manufacturer/Model List Button --- */
+@keyframes listItemIn {
+  0% {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.assistant-list-btn {
+  animation: listItemIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+}
+
+.assistant-list-btn:hover {
+  transform: translateX(10px) scale(1.02) !important;
+  box-shadow: 
+    8px 8px 16px var(--shadow-dark),
+    18px 18px 36px var(--shadow-dark-deep),
+    -6px -6px 14px var(--shadow-light),
+    -14px -14px 28px var(--shadow-light-bright),
+    inset 1px 1px 2px var(--glare-highlight),
+    0 0 20px var(--primary-glow) !important;
+  border-color: rgba(0, 242, 255, 0.15) !important;
+}
+
+.assistant-list-btn:active {
+  transform: translateX(4px) scale(0.97) !important;
+  box-shadow: 
+    inset 4px 4px 8px var(--shadow-dark),
+    inset 8px 8px 16px var(--shadow-dark-deep),
+    inset -2px -2px 4px var(--shadow-light),
+    inset -5px -5px 10px var(--shadow-light-bright) !important;
+}
+
+/* --- Model Selection Success Pulse --- */
+@keyframes modelSelectPulse {
+  0% {
+    box-shadow: 0 0 0 0 var(--success-glow);
+  }
+  70% {
+    box-shadow: 0 0 0 12px transparent;
+  }
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
+
+.assistant-model-btn:active {
+  animation: modelSelectPulse 0.6s ease-out;
+}
+
+/* Step indicator enhanced animation */
+@keyframes stepPulse {
+  0%, 100% { box-shadow: 0 0 8px var(--primary-glow); }
+  50% { box-shadow: 0 0 18px var(--primary-glow), 0 0 30px var(--primary-glow); }
+}
+
+.step-dot-active {
+  animation: stepPulse 2s ease-in-out infinite;
+}
+
+/* --- REDUCED MOTION: Accessibility fallback --- */
+@media (prefers-reduced-motion: reduce) {
+  .assistant-btn-aed,
+  .assistant-btn-defi,
+  .assistant-launch-btn,
+  .step-dot-active {
+    animation: none;
+  }
+
+  .assistant-btn-aed .assistant-icon,
+  .assistant-btn-defi .assistant-icon,
+  .wand-icon {
+    animation: none;
+  }
+
+  .assistant-list-btn {
+    animation: none;
+    opacity: 1;
+  }
+
+  .assistant-step-enter {
+    animation: none;
+    opacity: 1;
+  }
+
+  .charge-spark,
+  .sparkle-particle {
+    display: none;
+  }
+
+  .bump.breathe {
+    animation: none;
+  }
+
+  .floating-home {
+    animation: none;
+  }
+
+  .floating-reset {
+    animation: none;
+  }
+
+  .wave-border::before,
+  .wave-border::after {
+    animation: none;
+  }
+}
+
+/* ============================================
+   PANEL TRANSITIONS
+   ============================================ */
+
+.panel-container {
+  overflow: hidden;
+  position: relative;
+}
+
+/* ============================================
+   CINEMATIC 2D PANEL TRANSITIONS (no frame effect)
+   ============================================ */
+
+.panel-transitioning .app-main {
+  /* No perspective blur that could create frame edges */
+}
+
+/* Smooth Slide In From Right (main panel enters) */
+.panel-enter-right {
+  animation: smoothSlideInRight 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  will-change: transform, opacity;
+}
+
+@keyframes smoothSlideInRight {
+  0% {
+    opacity: 0;
+    transform: translateX(40px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Smooth Slide In From Left (history/settings panels) */
+.panel-enter-left {
+  animation: smoothSlideInLeft 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  will-change: transform, opacity;
+}
+
+@keyframes smoothSlideInLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-40px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Smooth Fade In (main panel) */
+.panel-enter-fade {
+  animation: smoothFadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
+}
+
+@keyframes smoothFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Smooth Exit To Left */
+.panel-exit-left {
+  animation: smoothSlideOutLeft 0.25s ease-in forwards;
+  will-change: transform, opacity;
+}
+
+@keyframes smoothSlideOutLeft {
+  0% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+}
+
+/* Smooth Exit To Right */
+.panel-exit-right {
+  animation: smoothSlideOutRight 0.25s ease-in forwards;
+  will-change: transform, opacity;
+}
+
+@keyframes smoothSlideOutRight {
+  0% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+}
+
+/* Panel container - no perspective that could create frame effect */
+.panel-container {
+  overflow: visible;
+  position: relative;
+  transform-style: flat;
+  perspective: none;
+}

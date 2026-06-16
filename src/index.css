@@ -1,0 +1,1751 @@
+:root {
+  --bg-color: #0d1117;
+  --bg-elevated: #161b22;
+  --text-color: #e0e6ed;
+  --primary-color: #00f2ff;
+  --primary-glow: rgba(0, 242, 255, 0.4);
+  --secondary-color: #7bd3ea;
+  --success-color: #00ff88;
+  --success-glow: rgba(0, 255, 136, 0.5);
+  --error-color: #ff4060;
+  --error-glow: rgba(255, 64, 96, 0.5);
+  
+  /* Multi-layer neumorphic shadows for extreme depth */
+  --shadow-dark: rgba(0, 0, 0, 0.5);
+  --shadow-dark-deep: rgba(0, 0, 0, 0.7);
+  --shadow-light: rgba(255, 255, 255, 0.03);
+  --shadow-light-bright: rgba(255, 255, 255, 0.06);
+  --glare-highlight: rgba(255, 255, 255, 0.08);
+  --glare-subtle: rgba(255, 255, 255, 0.04);
+  
+  --border-radius-md: 24px;
+  --border-radius-lg: 32px;
+  --border-radius-xl: 40px;
+  
+  --chip-bg: linear-gradient(145deg, #252b31, #161a1e);
+  --chip-color: #8b9bb4;
+  --chip-active-bg: linear-gradient(135deg, #00f2ff, #00b8e6);
+  --chip-active-color: #0f1216;
+  --group-header-bg: #181d22;
+  --bubble-bg: #1e2329;
+  --extruded-bg: linear-gradient(145deg, #252b31, #161a1e);
+  --extruded-color: #8b9bb4;
+  --device-img-bg: #161a1e;
+  --input-color: #fff;
+  --footer-color: #5c6a79;
+  
+  --font-mono: 'SF Mono', 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+}
+
+/* --- LIGHT THEME (APPLE-LIKE WARM OFF-WHITE) --- */
+[data-theme="light"] {
+  /* Warm off-white background — dark enough for neumorphic shadows to pop */
+  --bg-color: #e4e4e9;
+  --bg-elevated: #f2f2f7;
+  --text-color: #1a1a2e;
+  --primary-color: #ff6b35;
+  --primary-glow: rgba(255, 107, 53, 0.4);
+  --secondary-color: #ff2d78;
+  --success-color: #2ecc40;
+  --success-glow: rgba(46, 204, 64, 0.4);
+  --error-color: #ff2d78;
+  --error-glow: rgba(255, 45, 120, 0.4);
+  
+  /* Apple-style shadows: pure black, varying opacities — clean visible depth */
+  --shadow-dark: rgba(0, 0, 0, 0.15);
+  --shadow-dark-deep: rgba(0, 0, 0, 0.24);
+  --shadow-light: rgba(255, 255, 255, 0.9);
+  --shadow-light-bright: rgba(255, 255, 255, 1);
+  --glare-highlight: rgba(255, 255, 255, 0.6);
+  --glare-subtle: rgba(255, 255, 255, 0.3);
+  
+  --chip-bg: linear-gradient(145deg, #f2f2f7, #e4e4e9);
+  --chip-color: #5c6370;
+  --chip-active-bg: linear-gradient(135deg, #ff6b35, #ff2d78);
+  --chip-active-color: #ffffff;
+  --group-header-bg: #d9d9df;
+  --bubble-bg: #f2f2f7;
+  --extruded-bg: linear-gradient(145deg, #f2f2f7, #e4e4e9);
+  --extruded-color: #5c6370;
+  --device-img-bg: #d9d9df;
+  --input-color: #1a1a2e;
+  --footer-color: #8e8e93;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  /* Remove any default outlines and ensure full viewport coverage */
+  outline: none !important;
+  scroll-behavior: smooth;
+  /* Ensure html itself has the background color */
+  background-color: var(--bg-color);
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  overflow-x: hidden;
+  padding-top: 40px;
+  padding-bottom: 120px;
+  transition: background-color 0.4s ease, color 0.4s ease;
+  /* Fill the entire viewport with the app background - no visible square behind rounded corners */
+  position: relative;
+  /* Override any browser default outlines */
+  outline: none !important;
+  border: none !important;
+}
+
+/* Extend the app background to fill the entire viewport AND add atmospheric radial lighting */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: 
+    /* Lighter center for pop-out effect - creates "spotlight on foreground" illusion */
+    radial-gradient(
+      ellipse 120% 90% at 50% 40%,
+      rgba(255,255,255,0.06) 0%,
+      rgba(255,255,255,0.03) 40%,
+      transparent 70%
+    ),
+    var(--bg-color);
+  pointer-events: none;
+  z-index: -1;
+  transition: background 0.4s ease;
+}
+
+/* Ensure the root element also blends seamlessly */
+#root {
+  width: 100%;
+  max-width: 480px;
+  padding: 0 20px 60px 20px;
+  /* Ensure no background or border creates a frame effect */
+  background-color: transparent;
+  border: none;
+  outline: none;
+  box-shadow: none;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 24px;
+}
+
+.app-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 5px;
+}
+
+.app-title {
+  font-size: 1.6rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: 0.03rem;
+  text-transform: uppercase;
+  /* Soft multi-layer glow — innermost bright, fading outward */
+  text-shadow:
+    0 0 14px var(--primary-glow),
+    0 0 35px rgba(0, 242, 255, 0.18),
+    0 0 70px rgba(0, 242, 255, 0.08),
+    0 2px 4px rgba(0, 0, 0, 0.35);
+  filter: none;
+}
+
+[data-theme="light"] .app-title {
+  text-shadow:
+    0 0 14px var(--primary-glow),
+    0 0 35px rgba(255, 107, 53, 0.15),
+    0 0 70px rgba(255, 107, 53, 0.06),
+    0 2px 4px rgba(0, 0, 0, 0.12);
+}
+
+/* Subtle organic float — barely perceptible, fast */
+.title-float {
+  display: inline-block;
+  animation: titleFloat 4s ease-in-out infinite;
+  transform-origin: center center;
+  will-change: transform;
+}
+
+@keyframes titleFloat {
+  0%, 100% { 
+    transform: perspective(600px) rotateX(0deg) rotateY(0deg) scale(1); 
+  }
+  25% { 
+    transform: perspective(600px) rotateX(1.5deg) rotateY(-1deg) scale(1.015); 
+  }
+  50% { 
+    transform: perspective(600px) rotateX(-0.5deg) rotateY(1.5deg) scale(1.025); 
+  }
+  75% { 
+    transform: perspective(600px) rotateX(1deg) rotateY(-0.5deg) scale(1.01); 
+  }
+}
+
+/* --- EXTREME 3D NEUMORPHISM --- */
+
+/* Grain texture — disabled for performance */
+body::after {
+  display: none;
+}
+
+/* 3D Pop-out containers - look like they're pressed FORWARD from the background */
+.bump {
+  background: linear-gradient(145deg, var(--bg-elevated), var(--bg-color));
+  border-radius: var(--border-radius-lg);
+  /* Only 2 shadow layers — fast GPU compositing */
+  box-shadow: 
+    4px 4px 10px var(--shadow-dark),
+    -3px -3px 8px var(--shadow-light);
+  border: 1px solid rgba(255,255,255,0.03);
+  padding: 20px;
+  position: relative;
+  transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.bump::after {
+  display: none;
+}
+
+/* Glassmorphism variant — frosted glass with backdrop blur */
+.glass {
+  background: linear-gradient(135deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01));
+  backdrop-filter: blur(12px) saturate(150%);
+  -webkit-backdrop-filter: blur(12px) saturate(150%);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: var(--border-radius-lg);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+}
+
+/* Ensure children render above the glare overlay */
+.bump > * {
+  position: relative;
+  z-index: 1;
+}
+
+.bump.breathe {
+  animation: breathe 4s ease-in-out infinite;
+  contain: layout;
+}
+
+@keyframes breathe {
+  0%, 100% { transform: scale(0.995); }
+  50% { transform: scale(1.005); }
+}
+
+.dent {
+  background: linear-gradient(145deg, var(--bg-color), var(--bg-elevated));
+  border-radius: var(--border-radius-md);
+  box-shadow: inset 3px 3px 8px var(--shadow-dark), inset -2px -2px 6px var(--shadow-light);
+  border: none;
+  transition: box-shadow 0.15s ease;
+}
+
+/* --- COMPACT CHIP WRAPPER --- */
+.chip-wrapper {
+  background: var(--bg-color);
+  padding: 12px;
+  border-radius: 20px;
+  box-shadow: inset 4px 4px 10px var(--shadow-dark), inset -3px -3px 8px var(--shadow-light);
+  margin-bottom: 5px;
+  position: relative;
+  filter: url('#goo'); 
+  overflow: visible;
+  transition: box-shadow 0.15s ease;
+}
+
+.chip-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.manufacturer-chip {
+  background: var(--chip-bg);
+  border-radius: 8px;
+  padding: 8px;
+  color: var(--chip-color);
+  font-size: 0.6rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.05rem;
+  box-shadow: 
+    4px 4px 8px var(--shadow-dark), 
+    -2px -2px 6px var(--shadow-light),
+    0 0 12px transparent;
+  transition: transform 0.1s ease-out, background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: 38px;
+  cursor: pointer;
+  position: relative;
+  z-index: 2;
+  will-change: transform, box-shadow;
+  overflow: hidden;
+}
+
+/* --- THE TURQUOISE ACTIVE STATE --- */
+.manufacturer-chip.active {
+  background: var(--chip-active-bg);
+  color: var(--chip-active-color);
+  box-shadow: 
+    /* Pressed-in depth — the chip sits dented */
+    inset 4px 4px 10px rgba(0, 0, 0, 0.3),
+    /* Classic single glow — the greenish-bluish cyan from the original */
+    0 0 20px var(--primary-glow);
+  transform: scale(0.94) !important;
+  border: none;
+}
+
+/* Active chip: show the border ring permanently, subtle glow */
+.manufacturer-chip.active::after {
+  opacity: 1;
+  filter: drop-shadow(0 0 3px var(--primary-glow));
+}
+
+/* --- DUST PARTICLES EFFECT --- */
+.dust-container {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  overflow: visible;
+}
+
+.dust-particle {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.8);
+  width: 1px;
+  height: 1.1px;
+  border-radius: 50%;
+  box-shadow: 0 0 4px rgba(255, 255, 255, 0.5), 0 0 8px var(--primary-glow);
+  animation: drift linear infinite, shimmer ease-in-out infinite;
+}
+
+@keyframes drift {
+  from { transform: translate(0, 0); }
+  to { transform: translate(var(--dx), var(--dy)); }
+}
+
+@keyframes shimmer {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 0.8; }
+}
+
+/* Compact Halo */
+.manufacturer-chip::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    var(--angle, 135deg),
+    var(--primary-color),
+    rgba(255,255,255,0.4),
+    var(--primary-color)
+  );
+  -webkit-mask: 
+     linear-gradient(#fff 0 0) content-box, 
+     linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  filter: drop-shadow(0 0 4px var(--primary-glow));
+}
+
+.manufacturer-chip:hover::after {
+  opacity: 1;
+}
+
+/* Manufacturer chip: dezent single 20px glow on hover */
+.manufacturer-chip:hover {
+  box-shadow: 
+    4px 4px 8px var(--shadow-dark), 
+    -2px -2px 6px var(--shadow-light),
+    0 0 20px var(--primary-glow);
+}
+
+.manufacturer-chip.snapping {
+  transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* --- REFINED LIST UI — ORGANIC NEUMORPHIC DROPDOWN --- */
+
+.device-list-container {
+  background: linear-gradient(155deg, var(--bg-elevated), var(--bg-color));
+  border-radius: var(--border-radius-lg);
+  box-shadow: 4px 4px 12px var(--shadow-dark), -4px -4px 10px var(--shadow-light);
+  border: 1px solid rgba(255,255,255,0.05);
+  overflow: hidden;
+  margin-top: 10px;
+  transition: box-shadow 0.2s ease;
+  position: relative;
+}
+
+/* --- Attached mode — dropdown extrudes seamlessly from the search input --- */
+.device-list-container.attached {
+  background: linear-gradient(145deg, var(--bg-color), var(--bg-elevated));
+  border-radius: 0 0 var(--border-radius-lg) var(--border-radius-lg);
+  margin-top: -2px;
+  box-shadow: 4px 6px 14px var(--shadow-dark), -4px 6px 14px var(--shadow-dark), 0 20px 40px var(--shadow-dark-deep);
+  border-top: none;
+  overflow: hidden;
+}
+
+/* Glare highlight sweep across the top of the dropdown */
+.device-list-container::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    155deg,
+    var(--glare-highlight) 0%,
+    transparent 25%,
+    transparent 75%,
+    var(--shadow-dark) 100%
+  );
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* Attached glare — shifted down, blends seamlessly behind input */
+.device-list-container.attached::before {
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    transparent 25%,
+    var(--glare-highlight) 35%,
+    transparent 65%,
+    var(--shadow-dark) 100%
+  );
+  /* Round top-left and top-right of the glare to match the container */
+  border-radius: 0 0 var(--border-radius-lg) var(--border-radius-lg);
+}
+
+/* Layer content above glare overlay */
+.device-list-container.wave-border > * {
+  position: relative;
+  z-index: 4;
+}
+
+/* --- Group header — carved/etched into the surface --- */
+.group-header {
+  padding: 14px 20px;
+  font-size: 0.75rem;
+  font-weight: 950;
+  color: var(--primary-color);
+  text-transform: uppercase;
+  letter-spacing: 0.15rem;
+  background: linear-gradient(180deg, var(--group-header-bg), var(--bg-color));
+  border-bottom: none;
+  box-shadow: 
+    inset 0 -2px 4px var(--shadow-dark),
+    0 1px 0 var(--shadow-light);
+  position: relative;
+  z-index: 4;
+  transition: background 0.4s ease, color 0.4s ease;
+}
+
+/* Subtle primary glow accent line under group header */
+.group-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 20px;
+  right: 20px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
+  opacity: 0.2;
+}
+
+/* --- Device items — extruded hover with organic lift --- */
+.device-item {
+  margin: 4px 10px;
+  padding: 12px 15px;
+  border-radius: 14px;
+  position: relative;
+  z-index: 4;
+  background: transparent;
+  box-shadow: none;
+  transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.device-item:hover {
+  background: linear-gradient(145deg, var(--bg-elevated), var(--bg-color));
+  box-shadow: 4px 4px 10px var(--shadow-dark), -3px -3px 8px var(--shadow-light);
+  transform: translateX(4px) translateY(-1px);
+}
+
+/* --- REFINED TEST INPUTS --- */
+
+input.dent {
+  width: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--input-color);
+  font-size: 1.25rem;
+  font-weight: 800;
+  padding: 14px 18px;
+  transition: color 0.4s ease;
+}
+
+input.dent::placeholder {
+  color: var(--footer-color);
+  font-weight: 400;
+  font-size: 0.85rem;
+}
+
+/* --- KOMPAKTE SHOCK-EINGABEFELDER --- */
+.shock-card {
+  gap: 6px !important;
+}
+
+.shock-label {
+  font-size: 0.6rem !important;
+}
+
+.shock-target {
+  font-weight: 700;
+  color: var(--text-color);
+  font-size: 0.9rem;
+}
+
+.shock-target-value {
+  color: var(--primary-color);
+  text-shadow: 0 0 8px var(--primary-glow);
+}
+
+.shock-deviation-pct {
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.shock-deviation-j {
+  font-weight: 500;
+  font-size: 0.7rem;
+}
+
+input.dent.shock-input {
+  font-size: 0.95rem;
+  font-weight: 700;
+  padding: 8px 42px 8px 12px;
+  border-radius: 10px;
+}
+
+/* --- META-PILLS: Hersteller | Toleranz | IEC --- */
+.meta-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.6rem;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  letter-spacing: 0.03rem;
+  white-space: nowrap;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.meta-pill-mfr {
+  background: rgba(0, 242, 255, 0.06);
+  border: 1px solid rgba(0, 242, 255, 0.12);
+  color: var(--primary-color);
+}
+
+.meta-pill-tolerance {
+  background: rgba(0, 255, 136, 0.05);
+  border: 1px solid rgba(0, 255, 136, 0.1);
+  color: var(--success-color);
+}
+
+.meta-pill-iec {
+  background: rgba(123, 211, 234, 0.05);
+  border: 1px solid rgba(123, 211, 234, 0.1);
+  color: var(--secondary-color);
+}
+
+/* --- ABOUT CARD ANIMATION — 3D tilt on hover --- */
+.about-card {
+  cursor: default;
+  position: relative;
+  transition: transform 0.3s ease-out, box-shadow 0.3s ease-out;
+  transform-style: preserve-3d;
+  perspective: 800px;
+}
+
+.about-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    ellipse at var(--mx, 50%) var(--my, 50%),
+    var(--glare-highlight) 0%,
+    transparent 60%
+  );
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.about-card:hover {
+  transform: perspective(800px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg)) scale(1.01);
+  box-shadow: 12px 12px 28px var(--shadow-dark), -8px -8px 20px var(--shadow-light);
+}
+
+.about-card:hover::after {
+  opacity: 0.6;
+}
+
+.status-indicator {
+  height: 12px;
+  width: 12px;
+  border-radius: 50%;
+  box-shadow: 0 0 10px currentColor;
+}
+
+/* --- PREMIUM RESULT BUBBLE --- */
+
+.bubble {
+  padding: 24px;
+  border-radius: var(--border-radius-lg);
+  background: var(--bubble-bg);
+  box-shadow: 20px 20px 40px var(--shadow-dark), -10px -10px 30px var(--shadow-light);
+  position: relative;
+  overflow: hidden;
+  transition: background 0.4s ease, box-shadow 0.4s ease;
+}
+
+/* Pass glow ring animation */
+.bubble-pass {
+  animation: bubblePassIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  box-shadow: 
+    0 0 40px var(--success-glow),
+    0 0 80px var(--success-glow),
+    inset 0 0 30px rgba(0, 255, 136, 0.08);
+  border: 1px solid rgba(0, 255, 136, 0.3) !important;
+}
+
+.bubble-fail {
+  animation: bubbleFailShake 0.5s ease-out forwards;
+  box-shadow: 
+    0 0 30px var(--error-glow),
+    inset 0 0 20px rgba(255, 64, 96, 0.05);
+  border: 1px solid rgba(255, 64, 96, 0.25) !important;
+}
+
+@keyframes bubblePassIn {
+  0% { 
+    transform: scale(0.85); 
+    opacity: 0.3;
+  }
+  50% {
+    transform: scale(1.03);
+  }
+  100% { 
+    transform: scale(1); 
+    opacity: 1;
+  }
+}
+
+@keyframes bubbleFailShake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
+  20%, 40%, 60%, 80% { transform: translateX(4px); }
+}
+
+/* Glow particles emanating from pass bubble */
+.glow-particles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.glow-particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--success-color);
+  box-shadow: 0 0 8px var(--success-glow);
+  animation: floatUp 1.5s ease-out forwards;
+}
+
+@keyframes floatUp {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-80px) scale(0);
+    opacity: 0;
+  }
+}
+
+/* --- SCANLINES / HUD EFFECT --- */
+.scanlines {
+  position: relative;
+}
+.scanlines::after {
+  display: none;
+}
+
+/* Glow border that animates — organic pulsing edge */
+@keyframes glowBorderRotate {
+  0% { filter: hue-rotate(0deg); opacity: 0.15; }
+  50% { filter: hue-rotate(15deg); opacity: 0.3; }
+  100% { filter: hue-rotate(0deg); opacity: 0.15; }
+}
+
+.glow-border-animated {
+  position: relative;
+}
+
+.glow-border-animated::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  padding: 2px;
+  background: conic-gradient(
+    from 0deg,
+    var(--primary-color),
+    transparent 25%,
+    var(--primary-color) 50%,
+    transparent 75%,
+    var(--primary-color)
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0.15;
+  pointer-events: none;
+  animation: glowBorderRotate 4s ease-in-out infinite;
+}
+
+/* --- GLOW BORDER (static, no animation) --- */
+.glow-border {
+  position: relative;
+}
+
+.glow-border::before {
+  display: none;
+}
+
+/* --- PULSE INDICATOR --- */
+.pulse-pass {
+  animation: pulsePass 2s ease-in-out infinite;
+}
+
+.pulse-fail {
+  animation: pulseFail 1.5s ease-in-out infinite;
+}
+
+@keyframes pulsePass {
+  0%, 100% { 
+    box-shadow: 0 0 8px var(--success-glow), 0 0 16px var(--success-glow); 
+  }
+  50% { 
+    box-shadow: 0 0 18px var(--success-glow), 0 0 36px var(--success-glow); 
+  }
+}
+
+@keyframes pulseFail {
+  0%, 100% { 
+    box-shadow: 0 0 6px var(--error-glow), 0 0 12px var(--error-glow); 
+  }
+  50% { 
+    box-shadow: 0 0 14px var(--error-glow), 0 0 28px var(--error-glow); 
+  }
+}
+
+/* --- SHIMMER TEXT EFFECT --- */
+.shimmer-text {
+  background: linear-gradient(90deg, var(--primary-color), var(--secondary-color), var(--primary-color));
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmerText 4s linear infinite;
+}
+
+@keyframes shimmerText {
+  to { background-position: 200% center; }
+}
+
+/* --- FLOATING ORB ANIMATION --- */
+@keyframes floatOrb {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-5px); }
+}
+
+/* --- ENHANCED EXTRUDED BUTTONS --- */
+.extruded {
+  background: var(--extruded-bg);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  color: var(--extruded-color);
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 8px 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  box-shadow: 3px 3px 8px var(--shadow-dark), -2px -2px 6px var(--shadow-light);
+  transition: all 0.15s ease;
+  text-decoration: none;
+  position: relative;
+  overflow: visible;
+}
+
+.extruded::after {
+  display: none;
+}
+
+.extruded:hover {
+  box-shadow: 4px 4px 10px var(--shadow-dark), -3px -3px 8px var(--shadow-light);
+  transform: translateY(-2px);
+  color: var(--primary-color);
+}
+
+.extruded:active {
+  box-shadow: inset 2px 2px 6px var(--shadow-dark), inset -1px -1px 3px var(--shadow-light);
+  transform: translateY(1px);
+  color: var(--primary-color);
+}
+
+/* Header icon buttons - larger and more prominent */
+.header-btn {
+  width: 44px !important;
+  height: 44px !important;
+  padding: 0 !important;
+  border-radius: 14px !important;
+  position: relative;
+  box-shadow: 3px 3px 8px var(--shadow-dark), -2px -2px 6px var(--shadow-light) !important;
+}
+
+.header-btn::before {
+  display: none;
+}
+
+.header-btn:hover {
+  box-shadow: 4px 4px 12px var(--shadow-dark), -3px -3px 8px var(--shadow-light) !important;
+  transform: translateY(-2px);
+}
+
+.header-btn:active {
+  box-shadow: inset 2px 2px 6px var(--shadow-dark), inset -1px -1px 3px var(--shadow-light) !important;
+  transform: translateY(0px);
+}
+
+.header-home-btn {
+  box-shadow: 4px 4px 10px var(--shadow-dark), -3px -3px 8px var(--shadow-light) !important;
+}
+
+.header-home-btn:hover {
+  box-shadow: 5px 5px 14px var(--shadow-dark), -4px -4px 10px var(--shadow-light) !important;
+}
+
+.header-btn .icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: box-shadow 0.15s ease;
+  border-radius: 8px;
+  position: relative;
+  /* Subtle inset base for depth - makes icon look embedded/3D */
+  box-shadow: 
+    inset 1px 1px 2px rgba(0,0,0,0.15),
+    inset -1px -1px 1px rgba(255,255,255,0.05);
+}
+
+/* Icon wrapper shows dent effect - pressed inward with deeper inset shadows */
+.header-btn:active .icon-wrapper {
+  box-shadow: 
+    inset 3px 3px 6px var(--shadow-dark-deep),
+    inset 5px 5px 12px var(--shadow-dark),
+    inset -1px -1px 3px rgba(255,255,255,0.03);
+}
+
+/* The SVG icon stays perfectly centered - no transform that could shift it */
+.header-btn .icon-wrapper svg {
+  /* No transition or transform - icon stays fixed in center */
+}
+
+/* Wave ripple effect - spreads from click point, purple for header buttons */
+.header-btn .wave-ripple {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(160, 40, 250, 0.5) 0%, transparent 70%);
+  pointer-events: none;
+  transform: translate(-50%, -50%) scale(0);
+  animation: waveExpand 0.35s ease-out forwards;
+  z-index: 10;
+}
+
+@keyframes waveExpand {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0.4;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(2);
+    opacity: 0;
+  }
+}
+
+/* Ripple effect — barely-there shimmer instead of 80s flash */
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(160, 200, 255, 0.35) 0%, transparent 70%);
+  opacity: 0;
+  transform: scale(0);
+  animation: rippleOut 0.5s ease-out forwards;
+  pointer-events: none;
+}
+
+@keyframes rippleOut {
+  0% {
+    opacity: 0.12;
+    transform: scale(0.3);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.8);
+  }
+}
+
+/* --- HUD DATA READOUT --- */
+.hud-label {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12rem;
+  color: var(--footer-color);
+}
+
+.hud-value {
+  font-family: var(--font-mono);
+  font-size: 1.4rem;
+  font-weight: 900;
+  color: var(--primary-color);
+  text-shadow: 0 0 12px var(--primary-glow);
+}
+
+/* --- UTILITIES & LAYOUT --- */
+
+/* Neumorphic icon depth - gives SVG icons the 3D plastic look */
+.icon-neumorph {
+  filter: 
+    drop-shadow(2px 2px 3px var(--shadow-dark))
+    drop-shadow(-1px -1px 2px var(--shadow-light));
+  transition: filter 0.3s ease;
+}
+
+.icon-neumorph-glow {
+  filter: 
+    drop-shadow(2px 2px 3px var(--shadow-dark))
+    drop-shadow(-1px -1px 2px var(--shadow-light))
+    drop-shadow(0 0 10px var(--primary-glow));
+  transition: filter 0.3s ease;
+}
+
+.device-img-fancy {
+  border-radius: 18px;
+  background: var(--device-img-bg);
+  box-shadow: inset 3px 3px 8px var(--shadow-dark), 6px 6px 12px var(--shadow-dark);
+  padding: 15px;
+  transition: all 0.2s ease;
+}
+
+/* ============================================
+   HISTORY CARD DEVICE THUMBNAILS
+   Mirror reflection + multi-color cyberpunk neon glow
+   ============================================ */
+
+.device-thumb-reflect {
+  /* WebKit mirror reflection below the element */
+  -webkit-box-reflect: below 4px linear-gradient(
+    transparent 0%,
+    transparent 35%,
+    rgba(0,0,0,0.12) 70%,
+    rgba(0,0,0,0.25) 100%
+  );
+  position: relative;
+  z-index: 1;
+  /* Extra bottom margin to prevent reflection overlapping next card */
+  margin-bottom: 10px;
+}
+
+/* Base .device-thumb-img and .device-thumb-electrode also use theme-safe colors */
+.device-thumb-img {
+  background: var(--device-img-bg);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 1px solid rgba(128,128,128,0.12);
+  /* Neumorphic inset depth + multi-color neon aura using theme variables */
+  box-shadow: 
+    inset 2px 2px 5px var(--shadow-dark),
+    inset -1px -1px 2px var(--shadow-light),
+    0 0 10px var(--primary-glow),
+    0 0 20px var(--primary-glow),
+    0 0 40px var(--success-glow),
+    0 0 60px var(--error-glow);
+  transition: all 0.4s ease;
+}
+
+.device-thumb-electrode {
+  background: var(--device-img-bg);
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 1px solid rgba(128,128,128,0.1);
+  /* Neumorphic inset depth + subtle electrode glow */
+  box-shadow: 
+    inset 1px 1px 3px var(--shadow-dark),
+    inset -1px -1px 1px var(--shadow-light),
+    0 0 6px var(--success-glow),
+    0 0 14px var(--success-glow),
+    0 0 24px var(--error-glow);
+  transition: all 0.4s ease;
+}
+
+/* Pass state — amplify green reflections (theme-safe via CSS variables) */
+.device-thumb-pass .device-thumb-img {
+  box-shadow: 
+    inset 2px 2px 5px var(--shadow-dark),
+    inset -1px -1px 2px var(--shadow-light),
+    0 0 14px var(--success-glow),
+    0 0 28px var(--success-glow),
+    0 0 50px var(--success-glow),
+    0 0 70px var(--primary-glow);
+}
+
+.device-thumb-pass .device-thumb-electrode {
+  box-shadow: 
+    inset 1px 1px 3px var(--shadow-dark),
+    inset -1px -1px 1px var(--shadow-light),
+    0 0 10px var(--success-glow),
+    0 0 22px var(--success-glow),
+    0 0 36px var(--primary-glow);
+}
+
+/* Fail state — amplify red/pink reflections (theme-safe via CSS variables) */
+.device-thumb-fail .device-thumb-img {
+  box-shadow: 
+    inset 2px 2px 5px var(--shadow-dark),
+    inset -1px -1px 2px var(--shadow-light),
+    0 0 14px var(--error-glow),
+    0 0 28px var(--error-glow),
+    0 0 50px var(--error-glow),
+    0 0 70px var(--error-glow);
+}
+
+.device-thumb-fail .device-thumb-electrode {
+  box-shadow: 
+    inset 1px 1px 3px var(--shadow-dark),
+    inset -1px -1px 1px var(--shadow-light),
+    0 0 10px var(--error-glow),
+    0 0 22px var(--error-glow),
+    0 0 36px var(--error-glow);
+}
+
+.flex-col { display: flex; flex-direction: column; }
+.flex-row { display: flex; flex-direction: row; }
+.align-center { align-items: center; }
+.justify-center { justify-content: center; }
+.justify-between { justify-content: space-between; }
+.gap-xs { gap: 6px; }
+.gap-sm { gap: 12px; }
+.gap-md { gap: 24px; }
+.w-full { width: 100%; }
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-thumb { background: var(--primary-color); border-radius: 10px; }
+
+.status-success { color: var(--success-color); background: var(--success-color); }
+.status-error { color: var(--error-color); background: var(--error-color); }
+.status-pending { color: var(--warning-color, #f1c40f); background: var(--warning-color, #f1c40f); }
+
+.copyable:active { transform: scale(0.9); }
+
+.app-footer {
+  margin-top: 40px;
+  padding-bottom: 20px;
+  text-align: center;
+  font-size: 0.7rem;
+  color: var(--footer-color);
+  letter-spacing: 0.05rem;
+  text-transform: uppercase;
+  transition: color 0.4s ease;
+}
+
+/* Footer icon wrappers — use drop-shadow (shaped) not box-shadow (rectangular) */
+.footer-icon-wrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  outline: none;
+}
+
+.footer-icon-wrap svg {
+  display: block;
+}
+
+/* Heart — pulsating error-color glow via drop-shadow */
+.footer-icon-heart {
+  animation: footerHeartPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes footerHeartPulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 4px var(--error-glow)) drop-shadow(0 0 8px var(--error-glow));
+  }
+  50% {
+    filter: drop-shadow(0 0 10px var(--error-glow)) drop-shadow(0 0 22px var(--error-glow));
+  }
+}
+
+/* Zap — pulsating primary glow via drop-shadow */
+.footer-icon-zap {
+  animation: footerZapPulse 2s ease-in-out infinite;
+}
+
+@keyframes footerZapPulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 5px var(--primary-glow)) drop-shadow(0 0 12px var(--primary-glow));
+  }
+  50% {
+    filter: drop-shadow(0 0 12px var(--primary-glow)) drop-shadow(0 0 28px var(--primary-glow));
+  }
+}
+
+.svg-filters {
+  position: absolute;
+  width: 0;
+  height: 0;
+  visibility: hidden;
+}
+
+/* --- COPY TOAST ANIMATION --- */
+
+@keyframes toastPop {
+  0% { transform: translateX(-50%) translateY(8px) scale(0.8); opacity: 0; }
+  100% { transform: translateX(-50%) translateY(0) scale(1); opacity: 1; }
+}
+
+/* --- FLOATING NEUMORPHIC HOME BUTTON --- */
+
+.floating-home {
+  position: fixed;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  background: linear-gradient(145deg, var(--bg-elevated), var(--bg-color));
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 50px;
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  color: var(--primary-color);
+  font-weight: 800;
+  font-size: 0.85rem;
+  letter-spacing: 0.03rem;
+  box-shadow: 4px 4px 10px var(--shadow-dark), -3px -3px 8px var(--shadow-light), 0 4px 16px rgba(0, 242, 255, 0.08);
+  animation: fabFloat 2.5s ease-in-out infinite;
+  transition: all 0.2s ease;
+  overflow: hidden;
+}
+
+.floating-home:hover {
+  transform: translateX(-50%) translateY(-3px);
+  box-shadow: 5px 5px 14px var(--shadow-dark), -4px -4px 10px var(--shadow-light), 0 6px 24px rgba(0, 242, 255, 0.12);
+}
+
+.floating-home:active {
+  transform: translateX(-50%) scale(0.96);
+  box-shadow: inset 2px 2px 6px var(--shadow-dark), inset -1px -1px 3px var(--shadow-light);
+}
+
+.floating-home .fab-icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  box-shadow: 0 2px 6px var(--primary-glow), inset 0 1px 0 rgba(255,255,255,0.3);
+  flex-shrink: 0;
+}
+
+@keyframes fabFloat {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(-6px); }
+}
+
+/* --- RESET BUTTON VARIANT --- */
+.floating-reset {
+  position: fixed;
+  bottom: 100px;
+  right: 24px;
+  z-index: 100;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(145deg, var(--bg-elevated), var(--bg-color));
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 3px 3px 8px var(--shadow-dark), -2px -2px 5px var(--shadow-light);
+  transition: all 0.15s ease;
+}
+
+.floating-reset:hover {
+  transform: translateY(-2px) scale(1.06);
+  box-shadow: 4px 4px 10px var(--shadow-dark), -3px -3px 6px var(--shadow-light), 0 0 16px var(--error-glow);
+}
+
+.floating-reset:active {
+  transform: scale(0.94);
+  box-shadow: inset 2px 2px 5px var(--shadow-dark), inset -1px -1px 3px var(--shadow-light);
+}
+
+/* --- THEME TOGGLE ENHANCED --- */
+.theme-toggle {
+  width: 40px;
+  height: 40px;
+  border-radius: 14px;
+  background: linear-gradient(145deg, var(--bg-elevated), var(--bg-color));
+  border: 1px solid rgba(255,255,255,0.03);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 3px 3px 8px var(--shadow-dark), -2px -2px 6px var(--shadow-light);
+  transition: all 0.15s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.theme-toggle::after {
+  display: none;
+}
+
+.theme-toggle:hover {
+  transform: translateY(-2px);
+  box-shadow: 4px 4px 10px var(--shadow-dark), -3px -3px 8px var(--shadow-light);
+}
+
+.theme-toggle:active {
+  transform: translateY(0px) scale(0.95);
+  box-shadow: inset 2px 2px 5px var(--shadow-dark), inset -1px -1px 3px var(--shadow-light);
+}
+
+/* --- SPIN ANIMATION (for loading spinners) --- */
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* --- CARD ENTRANCE ANIMATION --- */
+@keyframes animateIn {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.96);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-in {
+  animation: animateIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* BREATHING GLOW DISABLED for performance */
+
+/* --- ASSISTANT BUTTON ANIMATIONS (kept for DeviceAssistant component) --- */
+
+/* ASSISTANT ANIMATIONS DISABLED for performance */
+
+/* --- Step Content Slide-Up Entrance --- */
+@keyframes slideUpFade {
+  0% { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.assistant-step-enter {
+  animation: slideUpFade 0.2s ease-out forwards;
+}
+
+/* --- Manufacturer/Model List Button --- */
+@keyframes listItemIn {
+  0% { opacity: 0; transform: translateX(-10px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+
+.assistant-list-btn {
+  animation: listItemIn 0.2s ease-out forwards;
+  opacity: 0;
+  transition: all 0.15s ease !important;
+}
+
+.assistant-list-btn:hover {
+  transform: translateX(5px) !important;
+  box-shadow: 4px 4px 10px var(--shadow-dark), -3px -3px 8px var(--shadow-light), 0 0 12px var(--primary-glow) !important;
+}
+
+.assistant-list-btn:active {
+  transform: translateX(2px) scale(0.97) !important;
+  box-shadow: inset 2px 2px 5px var(--shadow-dark), inset -1px -1px 3px var(--shadow-light) !important;
+}
+
+/* --- Model Selection Success Pulse --- */
+@keyframes modelSelectPulse {
+  0% {
+    box-shadow: 0 0 0 0 var(--success-glow);
+  }
+  70% {
+    box-shadow: 0 0 0 12px transparent;
+  }
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
+
+.assistant-model-btn:active {
+  animation: modelSelectPulse 0.6s ease-out;
+}
+
+/* Step indicator enhanced animation */
+@keyframes stepPulse {
+  0%, 100% { box-shadow: 0 0 8px var(--primary-glow); }
+  50% { box-shadow: 0 0 18px var(--primary-glow), 0 0 30px var(--primary-glow); }
+}
+
+.step-dot-active {
+  animation: stepPulse 2s ease-in-out infinite;
+}
+
+/* ============================================
+   VST3 HARDWARE-INSPIRED ASSISTANT BUTTON
+   Capsule-shaped metallic launch button with
+   chamfered bevel, LED indicator, and luminous text.
+   Inspired by premium audio plugin hardware panels.
+   ============================================ */
+
+/* Metallic gradient variables — dark theme (cool gunmetal) */
+:root {
+  --vst-metal-top: #4a505c;
+  --vst-metal-mid: #353a44;
+  --vst-metal-base: #2a2f38;
+  --vst-metal-bottom: #22272f;
+  --vst-metal-reflect: #3a404b;
+  --vst-bezel-highlight: rgba(255,255,255,0.06);
+  --vst-bezel-dark: rgba(0,0,0,0.35);
+}
+
+[data-theme="light"] {
+  --vst-metal-top: #fafafc;
+  --vst-metal-mid: #f0f0f5;
+  --vst-metal-base: #e4e4e9;
+  --vst-metal-bottom: #d9d9df;
+  --vst-metal-reflect: #ffffff;
+  --vst-bezel-highlight: rgba(255,255,255,0.9);
+  --vst-bezel-dark: rgba(0,0,0,0.12);
+}
+
+.assistant-launch-btn {
+  border-radius: 50px;
+  width: 100%;
+  font-size: 0.9rem;
+  font-weight: 700;
+  padding: 15px 20px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  position: relative;
+  overflow: visible;
+  border: none;
+  
+  box-shadow: 3px 3px 10px var(--vst-bezel-dark), -1px -1px 4px var(--vst-bezel-highlight), inset 0 1px 0 rgba(255,255,255,0.04);
+  color: var(--extruded-color);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, color 0.15s ease;
+  
+  background: linear-gradient(180deg, var(--vst-metal-top) 0%, var(--vst-metal-mid) 20%, var(--vst-metal-base) 55%, var(--vst-metal-bottom) 85%, var(--vst-metal-reflect) 100%);
+}
+
+/* --- Knallige Akzent-Farben für den Assistent-Button --- */
+:root {
+  --assistant-accent-1: #00f2ff;
+  --assistant-accent-2: #c840e9;
+  --assistant-accent-glow: rgba(0, 242, 255, 0.7);
+  --assistant-accent-glow-2: rgba(200, 64, 233, 0.7);
+}
+
+[data-theme="light"] {
+  --assistant-accent-1: #ff6b35;
+  --assistant-accent-2: #e040fb;
+  --assistant-accent-glow: rgba(255, 107, 53, 0.5);
+  --assistant-accent-glow-2: rgba(224, 64, 251, 0.5);
+}
+
+/* LED power indicator — knallig Cyan/Magenta */
+.assistant-launch-btn::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--assistant-accent-1), var(--assistant-accent-2));
+  box-shadow:
+    0 0 8px var(--assistant-accent-glow),
+    0 0 20px var(--assistant-accent-glow),
+    0 0 36px var(--assistant-accent-glow-2),
+    inset 0 0 2px rgba(255,255,255,0.5);
+  flex-shrink: 0;
+  animation: ledBreatheVibrant 2.5s ease-in-out infinite;
+  transition: all 0.3s ease;
+}
+
+@keyframes ledBreatheVibrant {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+@keyframes ledBreathe {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+/* Hover — button lifts, LED intensifies, NO glow border (puristic neumorphism) */
+.assistant-launch-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 4px 6px 14px var(--vst-bezel-dark), inset 0 1px 0 rgba(255,255,255,0.06);
+  color: var(--assistant-accent-1);
+}
+
+.assistant-launch-btn:hover::before {
+  animation: ledBreatheFastVibrant 1.2s ease-in-out infinite;
+}
+
+@keyframes ledBreatheFastVibrant {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
+}
+
+@keyframes ledBreatheFast {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
+}
+
+/* Press — deep dent into the surface */
+.assistant-launch-btn:active {
+  transform: translateY(1px);
+  box-shadow: inset 2px 2px 6px rgba(0,0,0,0.2), inset -1px -1px 3px var(--vst-bezel-highlight);
+  transition: all 0.1s ease;
+}
+
+/* --- Knalliger Gradient-Text für den Button --- */
+.assistant-btn-text {
+  font-weight: 800;
+  letter-spacing: 0.06rem;
+  text-transform: uppercase;
+  /* Engraved metal text effect */
+  text-shadow:
+    0 1px 0 rgba(255,255,255,0.06),
+    0 -1px 0 rgba(0,0,0,0.3);
+  /* Vibrant Cyan→Magenta gradient */
+  background: linear-gradient(
+    135deg,
+    var(--assistant-accent-1) 0%,
+    var(--assistant-accent-2) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 6px var(--assistant-accent-glow));
+  transition: all 0.3s ease;
+}
+
+.assistant-launch-btn:hover .assistant-btn-text {
+  text-shadow:
+    0 1px 0 rgba(255,255,255,0.1),
+    0 -1px 0 rgba(0,0,0,0.3),
+    0 0 18px var(--assistant-accent-glow),
+    0 0 36px var(--assistant-accent-glow-2);
+  background: linear-gradient(
+    135deg,
+    #ffffff 0%,
+    var(--assistant-accent-1) 40%,
+    var(--assistant-accent-2) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 14px var(--assistant-accent-glow));
+}
+
+/* Wand icon inside the button — metallic depth */
+.assistant-launch-btn .wand-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3)) drop-shadow(0 0 8px var(--primary-glow));
+  transition: filter 0.3s ease;
+}
+
+.assistant-launch-btn:hover .wand-icon {
+  filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3)) drop-shadow(0 0 16px var(--primary-glow));
+}
+
+/* --- REDUCED MOTION: Accessibility fallback --- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ============================================
+   PANEL TRANSITIONS
+   ============================================ */
+
+.panel-container {
+  overflow: hidden;
+  position: relative;
+}
+
+/* ============================================
+   CINEMATIC 2D PANEL TRANSITIONS (no frame effect)
+   ============================================ */
+
+.panel-transitioning .app-main {
+  /* No perspective blur that could create frame edges */
+}
+
+/* Smooth Slide In From Right (main panel enters) */
+.panel-enter-right {
+  animation: smoothSlideInRight 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  will-change: transform, opacity;
+}
+
+@keyframes smoothSlideInRight {
+  0% {
+    opacity: 0;
+    transform: translateX(40px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Smooth Slide In From Left (history/settings panels) */
+.panel-enter-left {
+  animation: smoothSlideInLeft 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  will-change: transform, opacity;
+}
+
+@keyframes smoothSlideInLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-40px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Smooth Fade In (main panel) */
+.panel-enter-fade {
+  animation: smoothFadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
+}
+
+@keyframes smoothFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Smooth Exit To Left */
+.panel-exit-left {
+  animation: smoothSlideOutLeft 0.25s ease-in forwards;
+  will-change: transform, opacity;
+}
+
+@keyframes smoothSlideOutLeft {
+  0% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+}
+
+/* Smooth Exit To Right */
+.panel-exit-right {
+  animation: smoothSlideOutRight 0.25s ease-in forwards;
+  will-change: transform, opacity;
+}
+
+@keyframes smoothSlideOutRight {
+  0% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+}
+
+/* Panel container - no perspective that could create frame effect */
+.panel-container {
+  overflow: visible;
+  position: relative;
+  transform-style: flat;
+  perspective: none;
+}
+
+/* ============================================
+   INFO GUIDE — STEP-BY-STEP TUTORIAL
+   ============================================ */
+
+.info-step-card {
+  position: relative;
+  overflow: visible;
+}
+
+/* Step number badge — glowing circle with number */
+.info-step-number {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow:
+    0 0 12px var(--primary-glow),
+    0 0 28px var(--primary-glow),
+    inset 0 1px 0 rgba(255,255,255,0.25);
+  font-weight: 900;
+  font-size: 0.85rem;
+  color: #0d1117;
+  font-family: var(--font-mono);
+}
+
+[data-theme="light"] .info-step-number {
+  color: #ffffff;
+}
+
+/* Vertical connector line between steps */
+.info-step-connector {
+  position: absolute;
+  left: 18px;
+  top: 60px;
+  width: 1px;
+  height: calc(100% - 100px);
+  background: linear-gradient(
+    180deg,
+    var(--primary-color) 0%,
+    transparent 100%
+  );
+  opacity: 0.15;
+  z-index: 0;
+}
+
+/* SVG diagram container — neumorphic inset frame */
+.info-diagram-container {
+  background: linear-gradient(145deg, var(--bg-color), var(--bg-elevated));
+  border-radius: 20px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow:
+    inset 3px 3px 8px var(--shadow-dark),
+    inset -2px -2px 6px var(--shadow-light);
+  border: 1px solid rgba(255,255,255,0.02);
+  overflow: hidden;
+}
+
+/* Pro-tip callout */
+.info-tip {
+  background: linear-gradient(135deg, rgba(0,242,255,0.04), rgba(123,211,234,0.02));
+  border: 1px solid rgba(0,242,255,0.08);
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-size: 0.68rem;
+  color: var(--secondary-color);
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+[data-theme="light"] .info-tip {
+  background: linear-gradient(135deg, rgba(255,107,53,0.06), rgba(255,45,120,0.03));
+  border: 1px solid rgba(255,107,53,0.1);
+  color: var(--primary-color);
+}
